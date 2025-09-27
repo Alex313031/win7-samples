@@ -1,0 +1,42 @@
+import("//build/config/win/manifest.gni")
+
+# Sample file diff tool from Win7 SDK
+executable("sdkdiff") {
+  configs -= [ "//build/config/win:console", ]
+  configs += [
+    "//build/config/win:windowed",
+    ":sdkdiff_config",
+  ]
+
+  if (use_libnt5) {
+    configs += [
+      "//src/libnt5:libnt5_public_config",
+    ]
+  }
+
+  sources = [
+    "calcrect.cc",
+    "calcrect.h",
+    "calcrect.rc"
+  ]
+
+  deps = [ ":sdkdiff_manifest" ]
+
+  if (use_libnt5) {
+    public_deps = [
+      "//src/libnt5:libnt5",
+      "//src/libnt5:libnt5_headers",
+    ]
+  }
+}
+
+windows_manifest("sdkdiff_manifest") {
+  sources = [ as_invoker_manifest, ]
+
+  if (use_common_controls) {
+    sources += [ common_controls_manifest, ]
+  }
+}
+
+config("sdkdiff_config") {
+}
